@@ -4,7 +4,7 @@ import customtkinter
 class MainButtons(customtkinter.CTkFrame):
     # Фрейм для основных кнопок. При нажатии должен меняться self.textbox
     def __init__(self, master, *args):
-        super().__init__(master)
+        super().__init__(master, fg_color="#eeeeee")
         self.buttons = []
 
         for i, value in enumerate(args):
