@@ -14,8 +14,7 @@ class MainButtons(customtkinter.CTkFrame):
 
 
 class FunctionsMixin:
-    @staticmethod
-    def test():
+    def test(self):
         print("yeah, all right")
 
 
@@ -28,30 +27,39 @@ class App(customtkinter.CTk, FunctionsMixin):
         self.minsize(width=800, height=600)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+        # настройки главного окна
 
-        self.sections = MainButtons(self, ("100 words", self.test), ("1000 words", self.test),
+        self.sections = MainButtons(self, ("100 words", self.size), ("1000 words", self.test),
                                     ("2000 words", self.test), ("3000 words", self.test),
                                     ("5000 words", self.test), ("7000 words", self.test),
                                     ("10000 words", self.test), ("20000 words", self.test))
         self.sections.grid(row=0, column=0, padx=15, pady=(50, 20), sticky="nsw")
+        # настройки секции с кнопками
 
         self.progressbar = customtkinter.CTkProgressBar(self, orientation="horizontal")
         self.progressbar.grid(row=0, column=0, padx=15, pady=(15, 15), sticky="nw")
+        # верхний раздел
 
         self.textbox = customtkinter.CTkTextbox(master=self, corner_radius=0, fg_color="white",
-                                                font=("calibri", 40), text_color="black")
-        self.textbox.grid(row=0, column=0, padx=(200, 10), pady=(50, 10), sticky="NWES", columnspan=2, rowspan=2)
+                                                font=("calibri", 76), text_color="black",
+                                                border_spacing=15, activate_scrollbars=False)
+        self.textbox.grid(row=0, column=0, padx=(200, 30), pady=(50, 10), sticky="NWES", columnspan=2, rowspan=2)
         self.textbox.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.textbox.insert("0.0",
-                            "Добро пожаловать\n"
-                            "Тебе нужно выбрать уровень чтобы приступить к обучению\n"
-                            "Для начала лучше освоить самые базовые слова, "
-                            "чтобы перейти к следующим\n"
-                            "Однако слова будут дублироваться от уровня к уровню. "
-                            "Так основы основ гораздо лучше заркепяться в голове")
+                            "Нужно выбрать раздел\n"
+                            "  с колличеством слов\n"
+                            "      для изучения")
+
+        print(self.size())
+
+    def size(self):
+        start = self.geometry().split("+")
+        print(int(start[0].split("x")[1]))
+
 
 
 if __name__ == "__main__":
     app = App()
     app.mainloop()
+    # запуск программы из основного файла
