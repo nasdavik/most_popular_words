@@ -2,7 +2,7 @@ import customtkinter
 
 
 class MainButtons(customtkinter.CTkFrame):
-    # Фрейм для основных кнопок. При нажатии должен меняться self.textbox
+    # фрейм для основных кнопок. При нажатии должен меняться self.textbox
     def __init__(self, master, *args):
         super().__init__(master, fg_color="#eeeeee")
         self.buttons = []
@@ -15,7 +15,7 @@ class MainButtons(customtkinter.CTkFrame):
 
 class FunctionsMixin:
     def test(self):
-        print("yeah, all right")
+        print(self.winfo_width())
 
 
 class App(customtkinter.CTk, FunctionsMixin):
@@ -27,9 +27,12 @@ class App(customtkinter.CTk, FunctionsMixin):
         self.minsize(width=800, height=600)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
+        self.bind("<Configure>", self.on_resize)
+        # тригер на изменения размеров экрана
+
         # настройки главного окна
 
-        self.sections = MainButtons(self, ("100 words", self.size), ("1000 words", self.test),
+        self.sections = MainButtons(self, ("100 words", self.test), ("1000 words", self.test),
                                     ("2000 words", self.test), ("3000 words", self.test),
                                     ("5000 words", self.test), ("7000 words", self.test),
                                     ("10000 words", self.test), ("20000 words", self.test))
@@ -41,7 +44,7 @@ class App(customtkinter.CTk, FunctionsMixin):
         # верхний раздел
 
         self.textbox = customtkinter.CTkTextbox(master=self, corner_radius=0, fg_color="white",
-                                                font=("calibri", 76), text_color="black",
+                                                font=("calibri", int(self.winfo_width() / 15)), text_color="black",
                                                 border_spacing=15, activate_scrollbars=False)
         self.textbox.grid(row=0, column=0, padx=(200, 30), pady=(50, 10), sticky="NWES", columnspan=2, rowspan=2)
         self.textbox.grid_rowconfigure(0, weight=1)
@@ -51,12 +54,9 @@ class App(customtkinter.CTk, FunctionsMixin):
                             "  с колличеством слов\n"
                             "      для изучения")
 
-        print(self.size())
-
-    def size(self):
-        start = self.geometry().split("+")
-        print(int(start[0].split("x")[1]))
-
+    def on_resize(self, event):
+        self.textbox.configure(font=("calibri", int(self.winfo_width() / 15)))
+    # меняет размер текста в блоке с текстом
 
 
 if __name__ == "__main__":
