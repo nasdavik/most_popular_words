@@ -1,9 +1,13 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from fake_useragent import UserAgent
 import time
 import random
 
-
+options = webdriver.FirefoxOptions()
+useragent = UserAgent()
+options.set_preference("general.useragent.override", useragent.random)
+# options.headless = True
 proxy = random.choice([None, "190.185.109.193:9417"])
 
 if proxy:
@@ -16,10 +20,10 @@ if proxy:
         "sslProxy": proxy
     }
 
-url = "https://translate.google.com/?hl=ru&sl=en&tl=ru&op=translate"
+url = "https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html"
 driver: webdriver = webdriver.Firefox(
     executable_path="/fierfoxdriver/geckodriver-0.33.0",
-    proxy=proxy
+    options=options, proxy=proxy
 )
 
 try:
@@ -29,7 +33,7 @@ try:
     input_world = driver.find_element(By.CLASS_NAME, "er8xn")
     input_world.clear()
     input_world.send_keys("world")
-    time.sleep(10)
+    time.sleep(2)
 
 except Exception as ex:
     print(ex)
