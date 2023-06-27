@@ -30,9 +30,9 @@ try:
     driver.get(url=url)
     time.sleep(2)
 
-    input_world = driver.find_element(By.CLASS_NAME, "er8xn")
-    input_world.clear()
-    input_world.send_keys("world")
+    input_word = driver.find_element(By.CLASS_NAME, "er8xn")
+    input_word.clear()
+    input_word.send_keys("world")
     time.sleep(2)
 
 except Exception as ex:

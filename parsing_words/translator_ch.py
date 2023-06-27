@@ -15,13 +15,13 @@ try:
     driver.get(url=url)
     time.sleep(2)
 
-    input_world = driver.find_element(By.CLASS_NAME, "er8xn")
-    input_world.clear()
-    input_world.send_keys("dog")
+    input_word = driver.find_element(By.CLASS_NAME, "er8xn")
+    input_word.clear()
+    input_word.send_keys("dog")
     time.sleep(2)
 
-    get_world = driver.find_element(By.CLASS_NAME, "j7bWb")
-    print(get_world.text)
+    get_word = driver.find_element(By.XPATH, "/html/body/c-wiz/div/div[2]/c-wiz/div[2]/c-wiz/div[2]/c-wiz/div/div/div[1]/div/div[1]/table/tbody[1]/tr[1]")
+    print(get_word.text)
     time.sleep(2)
 
 except Exception as ex:
