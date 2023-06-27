@@ -7,6 +7,7 @@ import random
 options = webdriver.FirefoxOptions()
 useragent = UserAgent()
 options.set_preference("general.useragent.override", useragent.random)
+
 # options.headless = True
 proxy = random.choice([None, "190.185.109.193:9417"])
 
@@ -20,7 +21,7 @@ if proxy:
         "sslProxy": proxy
     }
 
-url = "https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html"
+url = "https://translate.google.com/?hl=ru&sl=en&tl=ru&op=translate"
 driver: webdriver = webdriver.Firefox(
     executable_path="/fierfoxdriver/geckodriver-0.33.0",
     options=options, proxy=proxy
@@ -34,6 +35,9 @@ try:
     input_word.clear()
     input_word.send_keys("world")
     time.sleep(2)
+
+    get_word = driver.find_element(By.CLASS_NAME, "a2Icud").find_element(By.CLASS_NAME, "U87jab")
+    print(get_word.text)
 
 except Exception as ex:
     print(ex)
