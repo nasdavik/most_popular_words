@@ -3,6 +3,8 @@ from selenium.webdriver.common.by import By
 import json
 from multiprocessing import Pool
 
+translations = {}
+
 
 def processing_translate(wrd):
 
@@ -46,22 +48,23 @@ def processing_translate(wrd):
         driver.quit()
 
 
+def get_answer(word, attempt=0):
+    ans = processing_translate(word)
+    if len(ans) < 2 and attempt < 5:
+        get_answer(word, attempt=attempt+1)
+    else:
+        global translations
+        translations[word] = ans
+        print(f"{word} - Completed")
+
+
 if __name__ == "__main__":
     with open("C:\\Users\\1\\PycharmProjects\\most_popular_words\\words_lib\\words100.json", "r") as json_file:
         info = json.load(json_file)
-
-        def get_answer(word, attempt=0):
-            ans = processing_translate(word)
-            if attempt == 5:
-                return ans
-            if len(ans) < 2:
-                ans = get_answer(word, attempt=attempt+1)
-            global info
-            info[word] = ans
-            print(info)
-            print(f"{word} - Completed")
+        test = ['row', 'queen', 'king', 'pool']
 
         p = Pool(processes=2)
-        p.map(get_answer, info.keys())
+        p.map(get_answer, test)
+        print(translations)
 
 # AttributeError: Can't get attribute 'get_answer'
