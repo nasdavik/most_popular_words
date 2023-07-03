@@ -3,7 +3,11 @@ from selenium.webdriver.common.by import By
 from fake_useragent import UserAgent
 import random
 import json
+from multiprocessing import Pool, Manager
 
+manager = Manager()
+lock = manager.Lock()
+translations = {}
 
 def processing_translate(wrd):
 
@@ -61,20 +65,22 @@ def processing_translate(wrd):
         driver.quit()
 
 
+def get_answer(word, translations, lock, attempt=0):
+    ans = processing_translate(word)
+    if len(ans) < 2 and attempt < 5:
+        get_answer(word, translations, lock, attempt=attempt+1)
+    else:
+        lock.acquire()
+        translations[word] = ans
+        lock.release()
+        print(f"{word} - Completed")
+
+
 if __name__ == "__main__":
-    info = json.loads("C:\\Users\\Данила\\PycharmProjects\\most_popular_words\\words_lib\\words100.json")
-    print(info)
-    for i in info:
-        info = info.loads()
-        print(info)
-        for i in info.keys():
-            def get_answer():
-                ans = processing_translate(i)
-                if len(ans) < 2:
-                    ans = get_answer()
-                return ans
-            answer = get_answer()
-            print(answer)
-            print("#" * 10)
-            print(f"{i} - Completed")
-            print("-" * 10)
+    with open("C:\\Users\\Данила\\PycharmProjects\\most_popular_words\\words_lib\\words100.json") as json_file:
+        info = json.load(json_file)
+        test = ['row', 'queen', 'king', 'pool']
+
+        p = Pool(processes=2)
+        p.map(get_answer, [(word, translations, lock) for word in test])
+        print(translations)
