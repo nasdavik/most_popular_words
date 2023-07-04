@@ -1,9 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import json
-from multiprocessing import Pool
+from multiprocessing import Pool, RLock, Queue
 
-translations = {}
+translations = Queue()
+lock = RLock()
 
 
 def processing_translate(wrd):
@@ -54,8 +55,11 @@ def get_answer(word, attempt=0):
         get_answer(word, attempt=attempt+1)
     else:
         global translations
-        translations[word] = ans
-        print(f"{word} - Completed")
+        with lock:
+            my_dict = {word: ans}
+            translations.put(my_dict)
+            print(translations)
+            print(f"{word} - Completed")
 
 
 if __name__ == "__main__":
@@ -65,6 +69,6 @@ if __name__ == "__main__":
 
         p = Pool(processes=2)
         p.map(get_answer, test)
-        print(translations)
+        print(translations.get())
 
 # AttributeError: Can't get attribute 'get_answer'
