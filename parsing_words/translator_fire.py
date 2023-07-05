@@ -3,11 +3,11 @@ from selenium.webdriver.common.by import By
 from fake_useragent import UserAgent
 import random
 import json
-from multiprocessing import Pool, Manager
+from multiprocessing import Pool, RLock
 
-manager = Manager()
-lock = manager.Lock()
 translations = {}
+lock = RLock()
+
 
 def processing_translate(wrd):
 
@@ -65,22 +65,31 @@ def processing_translate(wrd):
         driver.quit()
 
 
-def get_answer(word, translations, lock, attempt=0):
+def get_answer(word, attempt=0):
     ans = processing_translate(word)
     if len(ans) < 2 and attempt < 5:
-        get_answer(word, translations, lock, attempt=attempt+1)
+        return get_answer(word, attempt=attempt+1)
     else:
-        lock.acquire()
-        translations[word] = ans
-        lock.release()
-        print(f"{word} - Completed")
+        with lock:
+            print(f"{word} - Completed")
+            return {word: ans}
+
+
+def end_func(response):
+    global translations
+    for x in response:
+        translations.update(dict(x))
 
 
 if __name__ == "__main__":
     with open("C:\\Users\\Данила\\PycharmProjects\\most_popular_words\\words_lib\\words100.json") as json_file:
         info = json.load(json_file)
-        test = ['row', 'queen', 'king', 'pool']
+        test = ['me', 'can', 'time', 'like', 'row', 'queen', 'king', 'pool']
 
-        p = Pool(processes=2)
-        p.map(get_answer, [(word, translations, lock) for word in test])
-        print(translations)
+        with Pool(4) as p:
+            p.map_async(get_answer, info.keys(), callback=end_func)
+            p.close()
+            p.join()
+
+    with open("C:\\Users\\Данила\\PycharmProjects\\most_popular_words\\words_lib\\test.json", "w", encoding='utf-8') as wr:
+        json.dump(translations, wr, ensure_ascii=False)
