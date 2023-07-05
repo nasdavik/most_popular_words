@@ -1,9 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import json
-from multiprocessing import Pool, RLock, Queue
+from multiprocessing import Pool, RLock
 
-translations = Queue()
+translations = {}
 lock = RLock()
 
 
@@ -54,21 +54,30 @@ def get_answer(word, attempt=0):
     if len(ans) < 2 and attempt < 5:
         get_answer(word, attempt=attempt+1)
     else:
-        global translations
         with lock:
-            my_dict = {word: ans}
-            translations.put(my_dict)
-            print(translations)
+            print(word, ans)
             print(f"{word} - Completed")
+            return {word: ans}
+
+
+def end_func(response):
+    global translations
+    print(response)
+    for x in response:
+        translations.update(dict(x))
 
 
 if __name__ == "__main__":
     with open("C:\\Users\\1\\PycharmProjects\\most_popular_words\\words_lib\\words100.json", "r") as json_file:
         info = json.load(json_file)
-        test = ['row', 'queen', 'king', 'pool']
+        test = ['me', 'can', 'time', 'like', 'row', 'queen', 'king', 'pool']
 
-        p = Pool(processes=2)
-        p.map(get_answer, test)
-        print(translations.get())
+        with Pool(2) as p:
+            p.map_async(get_answer, test, callback=end_func)
+            p.close()
+            p.join()
+        print(translations)
 
-# AttributeError: Can't get attribute 'get_answer'
+    with open("C:\\Users\\1\\PycharmProjects\\most_popular_words\\words_lib\\test.json", "w", encoding='utf-8') as wr:
+        json.dump(translations, wr, ensure_ascii=False)
+
