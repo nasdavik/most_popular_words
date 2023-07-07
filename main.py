@@ -1,19 +1,22 @@
 import customtkinter
 
+
 font = "fonts\\d9464-arkhip_font.ttf"
 
 
 class ProgressBars(customtkinter.CTkFrame):
 
     # фрейм для верхнего поля прогресса
-    def __init__(self, master, *args):
-        super().__init__(master, fg_color="#eeeeee")
-        self.buttons = []
+    def __init__(self, master):
+        super().__init__(master, fg_color="#FFFFFF")
+        self.bars = []
+        self.label = customtkinter.CTkLabel(self)
 
-        for i in enumerate(args):
-            button = customtkinter.CTkProgressBar(self, orientation="vertical", height=40, width=15)
-            button.grid(row=0, column=i, padx=15, pady=5)
-            self.buttons.append(button)
+        for i in range(8):
+            bar = customtkinter.CTkProgressBar(self, orientation="vertical", height=40, width=20,
+                                               progress_color="#42D942", corner_radius=7, fg_color="gray")
+            bar.grid(row=0, column=i, padx=(10, 55), pady=5)
+            self.bars.append(bar)
 
 
 class MainButtons(customtkinter.CTkFrame):
@@ -59,10 +62,10 @@ class App(customtkinter.CTk, FunctionsMixin):
                                     ("7 000 words", self.test),
                                     ("10 000 words", self.test),
                                     ("20 000 words", self.test))
-        self.sections.grid(row=0, column=0, padx=15, pady=(80, 20), sticky="nw")
+        self.sections.grid(row=0, column=0, padx=15, pady=(100, 20), sticky="nw")
 
         # верхний раздел
-        self.progressbar = ProgressBars(self, range(0, 8))
+        self.progressbar = ProgressBars(self)
         self.progressbar.grid(row=0, column=0, padx=20, pady=15, sticky="nw")
 
         # область с основным текстом
@@ -76,7 +79,6 @@ class App(customtkinter.CTk, FunctionsMixin):
                             "Нужно выбрать раздел\n"
                             "  с колличеством слов\n"
                             "      для изучения   ")
-
 
     # меняет размер текста в блоке с текстом
     def on_resize(self, event):
