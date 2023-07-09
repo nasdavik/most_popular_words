@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from fake_useragent import UserAgent
 import random
 import json
 from multiprocessing import Pool, RLock
@@ -10,10 +9,6 @@ lock = RLock()
 
 
 def processing_translate(wrd):
-
-    options = webdriver.FirefoxOptions()
-    useragent = UserAgent()
-    options.set_preference("general.useragent.override", useragent.random)
 
     # options.headless = True
     proxy = random.choice([None, "190.185.109.193:9417"])
@@ -31,7 +26,7 @@ def processing_translate(wrd):
     url = "https://translate.google.com/?hl=ru&sl=en&tl=ru&op=translate"
     driver: webdriver = webdriver.Firefox(
         executable_path="/fierfoxdriver/geckodriver-0.33.0",
-        options=options, proxy=proxy
+        proxy=proxy
     )
 
     try:
