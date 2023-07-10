@@ -77,7 +77,7 @@ def end_func(response):
 
 
 if __name__ == "__main__":
-    with open("C:\\Users\\Данила\\PycharmProjects\\most_popular_words\\words_lib\\words100.json") as json_file:
+    with open("C:\\Users\\Данила\\PycharmProjects\\most_popular_words\\words_lib\\words20000.json") as json_file:
         info = json.load(json_file)
         test = ['me', 'can', 'time', 'like', 'row', 'queen', 'king', 'pool']
 
